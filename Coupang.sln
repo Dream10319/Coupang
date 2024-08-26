@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coupang", "Coupang\Coupang.csproj", "{5B238E28-E86E-43A2-A845-4C6E31414E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoupangWeb", "CoupangWeb\CoupangWeb.csproj", "{9106BE74-179C-4571-9524-58E3238ADE20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoupangSub", "CoupangSub\CoupangSub.csproj", "{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Test With Proxy|Any CPU = Test With Proxy|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Test With Proxy|Any CPU.ActiveCfg = Test With Proxy|Any CPU
+		{5B238E28-E86E-43A2-A845-4C6E31414E96}.Test With Proxy|Any CPU.Build.0 = Test With Proxy|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Test With Proxy|Any CPU.ActiveCfg = Debug|Any CPU
+		{9106BE74-179C-4571-9524-58E3238ADE20}.Test With Proxy|Any CPU.Build.0 = Debug|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Test With Proxy|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED8E45D5-5ABD-4F08-B1D8-FE1DFAA245E7}.Test With Proxy|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E4C9E89-4120-4A4E-BB84-D074EFF04A5A}
+	EndGlobalSection
+EndGlobal

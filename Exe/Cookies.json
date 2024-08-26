@@ -1,0 +1,74 @@
+[
+  {
+    "Name": "device-id",
+    "Value": "df8ca0c4-7861-405e-af86-8bfc354f7dfeaaa",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": false,
+    "Expires": "0001-01-01T00:00:00"
+  },
+  {
+    "Name": "version",
+    "Value": "1.10.15",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": false,
+    "Expires": "0001-01-01T00:00:00"
+  },
+  {
+    "Name": "app-type",
+    "Value": "COUPANG_POS",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": false,
+    "Expires": "0001-01-01T00:00:00"
+  },
+  {
+    "Name": "access-token",
+    "Value": "da4c886fc7eb43a7cfa815ad8789b7ea5e462cfe8b158f1234448dd5d6ed6eef",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "2024-09-26T01:57:21.4927814+08:00"
+  },
+  {
+    "Name": "refresh-token",
+    "Value": "19923b85503c59e0a1814d3d393444ddb031c706885b5b431068e1b5951f00d7",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "2024-09-26T01:57:21.4927814+08:00"
+  },
+  {
+    "Name": "account-id",
+    "Value": "413698",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "2024-09-26T01:57:21.4927814+08:00"
+  },
+  {
+    "Name": "store-id",
+    "Value": "610147",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "2024-09-26T01:57:22.5905663+08:00"
+  },
+  {
+    "Name": "integrated-store-ids",
+    "Value": "",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "2024-09-26T01:57:22.5905663+08:00"
+  },
+  {
+    "Name": "SESSION",
+    "Value": "Yzk2OWM1MjgtY2FjNC00MGUzLThkMTctZjI0YWM3OTY5NTc2",
+    "Path": "/",
+    "Domain": "coupang.com",
+    "Secure": true,
+    "Expires": "0001-01-01T00:00:00"
+  }
+]
