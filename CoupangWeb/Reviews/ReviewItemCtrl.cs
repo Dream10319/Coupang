@@ -45,10 +45,10 @@ namespace CoupangWeb.Reviews
             mCallback = callback;
 
             txtUserName.Text = review.customerName ?? "";
-            txtTitle.Text    = review.comment ?? "";
-            txtRating.Text   = review.GetRatingText();
-            txtDate.Text     = review.GetDateText();
-            txtMenus.Text    = review.GetMenusText();
+            txtTitle.Text = review.comment ?? "";
+            txtRating.Text = review.GetRatingText();
+            txtDate.Text = review.GetDateText();
+            txtMenus.Text = review.GetMenusText();
             txtOrderInfo.Text = review.GetOrderInfoText();
             ShowImages();
             ShowComments();
@@ -163,7 +163,7 @@ namespace CoupangWeb.Reviews
             if ((mReview == null) || string.IsNullOrWhiteSpace(replyText))
                 return;
 
-            var client = new RestClient(string.Format("https://self.baemin.com/v1/review/shops/{0}/reviews/comments", mShopId))
+            var client = new RestClient("https://store.coupangeats.com/api/v1/merchant/reviews/reply")
             {
                 CookieContainer = Global.cookies,
                 Timeout = -1
@@ -173,14 +173,14 @@ namespace CoupangWeb.Reviews
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "*/*");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Origin", "https://ceo.baemin.com");
-            request.AddHeader("Referer", "https://ceo.baemin.com/");
-            request.AddHeader("service-channel", "SELF_SERVICE_PC");
+            request.AddHeader("Origin", "https://store.coupangeats.com");
+            request.AddHeader("Referer", "https://store.coupangeats.com/merchant/management/reviews");
 
             request.AddJsonBody(new
             {
-                reviewId = mReview.orderReviewId,
-                contents = replyText
+                comment = replyText,
+                orderReviewId = mReview.orderReviewId,
+                storeId = mReview.storeId
             });
 
             IRestResponse _result = await Task.Run(() => client.ExecuteAsync(request));
@@ -188,28 +188,17 @@ namespace CoupangWeb.Reviews
                 Global.SaveCookies(_result.Cookies);
 
                 string msg = "댓글 등록 실패했습니다.";
-                string text = _result.Content;
-                if (!string.IsNullOrEmpty(text))
+                if (_result.StatusCode == HttpStatusCode.OK)
                 {
                     try
                     {
-                        /*SBMAddCommentApiResult response = JsonConvert.DeserializeObject<SBMAddCommentApiResult>(text);
-                        if (response.reviewCommentId > 0)
-                        {
-                            var cmt = new SBMCommentInfo();
-                            if (mReview.comments == null)
-                                mReview.comments = new List<SBMCommentInfo> { cmt };
-                            else
-                                mReview.comments.Insert(0, cmt);
-                            //ShowComments();
-                            var ctrl = new CommentItemCtrl();
-                            ctrl.SetData(cmt, this);
-                            pnlComments.Controls.Add(ctrl);
-
-                            if (mCallback != null)
-                                mCallback.OnChangedReply(this);
-                            msg = "";
-                        }*/
+                        var jsonresponse = JsonConvert.DeserializeObject<dynamic>(_result.Content);
+                        CPWReviewReply replyitem = JsonConvert.DeserializeObject<CPWReviewReply>(jsonresponse.data.ToString());
+                        mReview.replies.Add(replyitem);
+                        ShowComments();
+                        if (mCallback != null)
+                            mCallback.OnChangedReply(this);
+                        msg = "";
                     }
                     catch { }
                 }
