@@ -27,8 +27,8 @@ namespace CoupangWeb.Auth
         {
             if (Global.TEST_MODE != 0)
             {
-                txtUserId.Text   = "01086078688";
-                txtPassword.Text = "@coupang1";
+                txtUserId.Text   = "01041224242";
+                txtPassword.Text = "abcd4242@";
             }
         }
 

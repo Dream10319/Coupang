@@ -117,6 +117,7 @@ namespace AIReview
                                 string oldname = myreader.Substring(0, myreader.IndexOf("님"));
                                 gencomment = myreader.Replace(oldname, sCustomerName);
                             }
+                            if (string.IsNullOrEmpty(gencomment)) gencomment = samplecomment;
                         }
                         catch (Exception ex)
                         {
