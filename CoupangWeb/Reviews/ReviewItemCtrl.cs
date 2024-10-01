@@ -129,7 +129,7 @@ namespace CoupangWeb.Reviews
             mSelReply = source;
             Thread th = new Thread(new ParameterizedThreadStart((object f) =>
             {
-                //DeleteReplyApi(reply.orderReviewReplyId);
+                DeleteReplyApi(reply.orderReviewReplyId);
             }));
             th.Start();
         }
@@ -259,18 +259,24 @@ namespace CoupangWeb.Reviews
             if (commentId < 1)
                 return;
 
-            var client = new RestClient(string.Format("https://self.baemin.com/v1/review/shops/{0}/reviews/comments/{1}", mShopId, commentId))
+            var client = new RestClient("https://store.coupangeats.com/api/v1/merchant/reviews/reply/delete")
             {
                 CookieContainer = Global.cookies,
                 Timeout = -1
             };
             client.UserAgent = Global.userAgent;
 
-            var request = new RestRequest(Method.DELETE);
-            request.AddHeader("Accept", "*/*");
-            request.AddHeader("Origin", "https://ceo.baemin.com");
-            request.AddHeader("Referer", "https://ceo.baemin.com/");
-            request.AddHeader("service-channel", "SELF_SERVICE_PC");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json;charset=UTF-8");
+            request.AddHeader("Origin", "https://store.coupangeats.com");
+            request.AddHeader("Referer", "https://store.coupangeats.com/merchant/management/reviews");
+
+            request.AddJsonBody(new
+            {
+                orderReviewReplyId = commentId,
+                storeId = mReview.storeId
+            });
 
             IRestResponse _result = await Task.Run(() => client.ExecuteAsync(request));
             Invoke(new Action(() => {
