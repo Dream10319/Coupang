@@ -152,7 +152,7 @@ namespace CoupangWeb.Reviews
                 string reply = dlg.Comment;
                 Thread th = new Thread(new ParameterizedThreadStart((object f) =>
                 {
-                    //UpdateCommentApi(info, reply);
+                    UpdateCommentApi(info, reply);
                 }));
                 th.Start();
             }
@@ -214,8 +214,7 @@ namespace CoupangWeb.Reviews
             if ((mReview == null) || (replyInfo == null))
                 return;
 
-            var client = new RestClient(string.Format("https://self.baemin.com/v1/review/shops/{0}/reviews/comments/{1}",
-                                                                                mShopId, replyInfo.orderReviewReplyId))
+            var client = new RestClient("https://store.coupangeats.com/api/v1/merchant/reviews/reply/modify")
             {
                 CookieContainer = Global.cookies,
                 Timeout = -1
@@ -223,16 +222,16 @@ namespace CoupangWeb.Reviews
             client.UserAgent = Global.userAgent;
 
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Accept", "*/*");
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Origin", "https://ceo.baemin.com");
-            request.AddHeader("Referer", "https://ceo.baemin.com/");
-            request.AddHeader("service-channel", "SELF_SERVICE_PC");
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json;charset=UTF-8");
+            request.AddHeader("Origin", "https://store.coupangeats.com");
+            request.AddHeader("Referer", "https://store.coupangeats.com/merchant/management/reviews");
 
             request.AddJsonBody(new
             {
-                reviewId = mReview.orderReviewId,
-                contents = replyText
+                comment = replyText,
+                orderReviewReplyId = replyInfo.orderReviewReplyId,
+                storeId = mReview.storeId
             });
 
             IRestResponse _result = await Task.Run(() => client.ExecuteAsync(request));

@@ -57,6 +57,7 @@
             this.btnUpdateComment.Text = "수정";
             this.btnUpdateComment.UseVisualStyleBackColor = true;
             this.btnUpdateComment.Visible = false;
+            this.btnUpdateComment.Click += btnUpdateComment_Click;
             // 
             // btnDeleteComment
             // 
@@ -67,6 +68,7 @@
             this.btnDeleteComment.TabIndex = 56;
             this.btnDeleteComment.Text = "삭제";
             this.btnDeleteComment.UseVisualStyleBackColor = true;
+            this.btnDeleteComment.Click += btnDeleteComment_Click;
             // 
             // txtReply
             // 
@@ -101,7 +103,7 @@
             this.pnlButtons.TabIndex = 62;
             this.pnlButtons.WrapContents = false;
             // 
-            // CommentItemCtrl
+            // ReplyItemCtrl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.txtName);
@@ -109,12 +111,17 @@
             this.Controls.Add(this.txtDate);
             this.Controls.Add(this.pnlButtons);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Name = "CommentItemCtrl";
+            this.Name = "ReplyItemCtrl";
             this.Size = new System.Drawing.Size(680, 105);
             this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void BtnDeleteComment_Click(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

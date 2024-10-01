@@ -39,26 +39,26 @@ namespace CoupangWeb.Reviews
                 btnUpdateComment.Visible = (DateTime.Today - dtCreate).TotalDays < 31;
 
             mReplyInfo = replyInfo;
-            mCallback  = callback;
+            mCallback = callback;
         }
 
         public void UpdateReply(string text)
         {
-            txtReply.Text   = text;
+            txtReply.Text = text;
             mReplyInfo.content = text;
         }
 
 
         private void btnDeleteComment_Click(object sender, EventArgs e)
         {
-            /*if (mCallback != null)
-                mCallback.OnDeleteReply(this);*/
+            if (mCallback != null)
+                mCallback.OnDeleteReply(this);
         }
 
         private void btnUpdateComment_Click(object sender, EventArgs e)
         {
-            /*if (mCallback != null)
-                mCallback.OnUpdateReply(this);*/
+            if (mCallback != null)
+                mCallback.OnUpdateReply(this);
         }
 
         public interface IEventCallback
