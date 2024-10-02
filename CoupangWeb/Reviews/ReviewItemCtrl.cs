@@ -50,6 +50,7 @@ namespace CoupangWeb.Reviews
             txtDate.Text = review.GetDateText();
             txtMenus.Text = review.GetMenusText();
             txtOrderInfo.Text = review.GetOrderInfoText();
+
             ShowImages();
             ShowComments();
         }
@@ -81,7 +82,7 @@ namespace CoupangWeb.Reviews
             bool writeable = false;
             var dtCreate = mReview.createdAt;
             if (dtCreate != null)
-                writeable = (DateTime.Today - dtCreate).TotalDays < 31;
+                writeable = (DateTime.Today - dtCreate).TotalDays < 14;
             btnAddReply.Visible = writeable;
             btnAddReply.Text = (count > 0) ? "사장님 댓글 추가하기" : "사장님 댓글 등록하기";
             if (count > 0)
