@@ -193,12 +193,17 @@ namespace CoupangWeb.Reviews
                     try
                     {
                         var jsonresponse = JsonConvert.DeserializeObject<dynamic>(_result.Content);
-                        CPWReviewReply replyitem = JsonConvert.DeserializeObject<CPWReviewReply>(jsonresponse.data.ToString());
-                        mReview.replies.Add(replyitem);
-                        ShowComments();
-                        if (mCallback != null)
-                            mCallback.OnChangedReply(this);
-                        msg = "";
+                        if (jsonresponse.data == null)
+                            msg = jsonresponse.error.message;
+                        else
+                        {
+                            CPWReviewReply replyitem = JsonConvert.DeserializeObject<CPWReviewReply>(jsonresponse.data.ToString());
+                            mReview.replies.Add(replyitem);
+                            ShowComments();
+                            if (mCallback != null)
+                                mCallback.OnChangedReply(this);
+                            msg = "";
+                        }
                     }
                     catch { }
                 }
