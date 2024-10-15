@@ -3,13 +3,11 @@ using OpenAI_API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using System.Data.SQLite;
+using MySql.Data.MySqlClient; // Use MySQL library
 
 namespace AIReview
 {
@@ -99,92 +97,92 @@ namespace AIReview
             {
                 Thread th = new Thread(new ThreadStart(() =>
                 {
-                    SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source=review.db; Version = 3; New = True; Compress = True; ");
-                    try
+                    string connString = ""; // Replace with your MySQL connection string
+                    using (MySqlConnection mysql_conn = new MySqlConnection(connString))
                     {
-                        sqlite_conn.Open();
-                        SQLiteDataReader sqlite_datareader;
-                        SQLiteCommand sqlite_cmd;
-                        sqlite_cmd = sqlite_conn.CreateCommand();
-                        sqlite_cmd.CommandText = string.Format(@"SELECT owner_comment FROM reviews WHERE rating LIKE '%{0}%' AND menu_name LIKE '%{1}%' ORDER BY RANDOM() LIMIT 1", sRating, sMenu);
-                        string gencomment = "";
                         try
                         {
-                            sqlite_datareader = sqlite_cmd.ExecuteReader();
-                            while (sqlite_datareader.Read())
+                            mysql_conn.Open();
+                            MySqlCommand mysql_cmd = new MySqlCommand(string.Format(@"SELECT owner_comment FROM reviews WHERE rating LIKE '%{0}%' AND menu_name LIKE '%{1}%' ORDER BY RAND() LIMIT 1", sRating, sMenu), mysql_conn);
+                            string gencomment = "";
+                            try
                             {
-                                string myreader = sqlite_datareader.GetString(0);
-                                string oldname = myreader.Substring(0, myreader.IndexOf("님"));
-                                gencomment = myreader.Replace(oldname, sCustomerName);
+                                using (MySqlDataReader mysql_datareader = mysql_cmd.ExecuteReader())
+                                {
+                                    while (mysql_datareader.Read())
+                                    {
+                                        string myreader = mysql_datareader.GetString(0);
+                                        string oldname = myreader.Substring(0, myreader.IndexOf("님"));
+                                        gencomment = myreader.Replace(oldname, sCustomerName);
+                                    }
+                                    if (string.IsNullOrEmpty(gencomment)) gencomment = samplecomment;
+                                }
                             }
-                            if (string.IsNullOrEmpty(gencomment)) gencomment = samplecomment;
+                            catch (Exception ex)
+                            {
+                                gencomment = samplecomment;
+                            }
+                            var chatRequest = new ChatRequest();
+                            if (!string.IsNullOrEmpty(sCustomerReview))
+                            {
+                                chatRequest = new ChatRequest
+                                {
+                                    Model = "gpt-4o",
+                                    MaxTokens = 500,
+                                    Messages = new ChatMessage[] {
+                                        new ChatMessage(ChatMessageRole.System, "당신은 매장 주인입니다"),
+                                        new ChatMessage(ChatMessageRole.User, string.Format("'{0}' 이것은 {1}고객님께서 {2}매장의 {3}에 대하여 남긴 {4}점 리뷰입니다. '{5}' 그리고 이것은 현재 별점에 대한 일반적인 댓글형식입니다. 이를 참고하여 더 정확하고 창의적인 댓글은 무엇일까요?  댓글에 이모티콘을 포함하도록 해주세요. 댓글은 날짜, 계절, 날씨, 리뷰 이벤트, 연락처 정보, 무료로 제공, 무료서비스, 찜, 현재 메뉴가 아닌 다른 음식 메뉴 등에 대해 언급하지 않도록 일반적이어야 하며 현재 매장, 현재 메뉴 및 별점과 관련되어야 합니다. 현재 매장 이름은 {2}이고 현재 메뉴는 {3}이며 별점은 {4}입니다. 그리고 현재 리뷰에 대해서도 더 자세하고 친절하게 답변해주셔야 하며 위에 언급된 댓글 양식을 참조해야 합니다.", sCustomerReview, sCustomerName, sShop, sMenu, sRating, gencomment)),
+                                        new ChatMessage(ChatMessageRole.Assistant, gencomment)
+                                    },
+                                    PresencePenalty = 0.1,
+                                    FrequencyPenalty = 0.1
+                                };
+                                try
+                                {
+                                    fMain.Invoke(new Action(async () =>
+                                    {
+                                        await openAiApi.Chat.StreamChatAsync(chatRequest, res => tComment.Text += res.ToString());
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Error: " + ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                chatRequest = new ChatRequest
+                                {
+                                    Model = "gpt-4o",
+                                    MaxTokens = 500,
+                                    Messages = new ChatMessage[] {
+                                        new ChatMessage(ChatMessageRole.System, "당신은 매장 주인입니다"),
+                                        new ChatMessage(ChatMessageRole.User, string.Format("{0}고객님이 리뷰를 남기지 않았지만 {1}매장의 {2}에 별점 {3}을 주었습니다. 이에 대한 댓글은 무엇일까요? 댓글에 이모티콘을 포함하도록 해주세요. 댓글은 날짜, 계절, 날씨, 리뷰 이벤트, 연락처 정보, 무료로 제공, 무료서비스, 현재 메뉴가 아닌 다른 음식 메뉴 등에 대해 언급하지 않도록 일반적이어야 하며 현재 매장, 찜, 현재 메뉴 및 별점과 관련되어야 합니다. 현재 매장 이름은 {1}이고 현재 메뉴는 {2}이며 별점은 {3}입니다. 그리고 자세하고 친절하게 답변해주셔야 합니다.", sCustomerName, sShop, sMenu, sRating)),
+                                        new ChatMessage(ChatMessageRole.Assistant, null)
+                                    },
+                                    PresencePenalty = 0.1,
+                                    FrequencyPenalty = 0.1
+                                };
+
+                                try
+                                {
+                                    fMain.Invoke(new Action(async () =>
+                                    {
+                                        await openAiApi.Chat.StreamChatAsync(chatRequest, res => tComment.Text += res.ToString());
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Error: " + ex.Message);
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
-                            gencomment = samplecomment;
+                            MessageBox.Show("Database error: " + ex.Message);
                         }
-                        var chatRequest = new ChatRequest();
-                        if (!string.IsNullOrEmpty(sCustomerReview))
-                        {
-                            chatRequest = new ChatRequest
-                            {
-                                Model = "gpt-4o",
-                                MaxTokens = 500,
-                                Messages = new ChatMessage[] {
-                                new ChatMessage(ChatMessageRole.System, "당신은 매장 주인입니다"),
-                                new ChatMessage(ChatMessageRole.User, string.Format("'{0}' 이것은 {1}고객님께서 {2}매장의 {3}에 대하여 남긴 {4}점 리뷰입니다. '{5}' 그리고 이것은 현재 별점에 대한 일반적인 댓글형식입니다. 이를 참고하여 더 정확하고 창의적인 댓글은 무엇일까요?  댓글에 이모티콘을 포함하도록 해주세요. 댓글은 날짜, 계절, 날씨, 리뷰 이벤트, 연락처 정보, 무료로 제공, 무료서비스, 찜, 현재 메뉴가 아닌 다른 음식 메뉴 등에 대해 언급하지 않도록 일반적이어야 하며 현재 매장, 현재 메뉴 및 별점과 관련되어야 합니다. 현재 매장 이름은 {2}이고 현재 메뉴는 {3}이며 별점은 {4}입니다. 그리고 현재 리뷰에 대해서도 더 자세하고 친절하게 답변해주셔야 하며 위에 언급된 댓글 양식을 참조해야 합니다.", sCustomerReview, sCustomerName, sShop, sMenu, sRating, gencomment)),
-                                new ChatMessage(ChatMessageRole.Assistant, gencomment)
-                                },
-                                PresencePenalty = 0.1,
-                                FrequencyPenalty = 0.1
-                            };
-                            try
-                            {
-                                fMain.Invoke(new Action(async () =>
-                                {
-                                    await openAiApi.Chat.StreamChatAsync(chatRequest, res => tComment.Text += res.ToString());
-                                }));
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Error: " + ex.Message);
-                            }
-                        }
-                        else
-                        {
-                            chatRequest = new ChatRequest
-                            {
-                                Model = "gpt-4o",
-                                MaxTokens = 500,
-                                Messages = new ChatMessage[] {
-                                new ChatMessage(ChatMessageRole.System, "당신은 매장 주인입니다"),
-                                new ChatMessage(ChatMessageRole.User, string.Format("{0}고객님이 리뷰를 남기지 않았지만 {1}매장의 {2}에 별점 {3}을 주었습니다. 이에 대한 댓글은 무엇일까요? 댓글에 이모티콘을 포함하도록 해주세요. 댓글은 날짜, 계절, 날씨, 리뷰 이벤트, 연락처 정보, 무료로 제공, 무료서비스, 현재 메뉴가 아닌 다른 음식 메뉴 등에 대해 언급하지 않도록 일반적이어야 하며 현재 매장, 찜, 현재 메뉴 및 별점과 관련되어야 합니다. 현재 매장 이름은 {1}이고 현재 메뉴는 {2}이며 별점은 {3}입니다. 그리고 자세하고 친절하게 답변해주셔야 합니다.", sCustomerName, sShop, sMenu, sRating)),
-                                new ChatMessage(ChatMessageRole.Assistant, null)
-                                },
-                                PresencePenalty = 0.1,
-                                FrequencyPenalty = 0.1
-                            };
-
-                            try
-                            {
-                                fMain.Invoke(new Action(async () =>
-                                {
-                                    await openAiApi.Chat.StreamChatAsync(chatRequest, res => tComment.Text += res.ToString());
-                                }));
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Error: " + ex.Message);
-                            }
-                        }
-                        sqlite_conn.Close();
                     }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-                ));
+                }));
 
                 th.Start();
             }
